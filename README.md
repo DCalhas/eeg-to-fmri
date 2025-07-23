@@ -2,9 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-
-[![Code: Documentation](https://img.shields.io/badge/code-documentation-green)](https://dcalhas.github.io/eeg_to_fmri/DOCUMENTATION.html)
-
 ## Setup
 
 Ideally, your machine has a GPU and is running Linux. Please install the package via PyPI:
@@ -16,18 +13,13 @@ pip install eeg-to-fmri
 ## How do I test this research on my dataset?
 
 Testing a new dataset on this framework should not be too difficult. Do the following (in the order you feel most comfortable):
-- define the number of individuals, **n_individuals_NEW**, that your dataset contains, this can be done in the [data_utils.py](https://github.com/DCalhas/eeg_to_fmri/blob/0c634384faa79c7f7289aa7ec1af9b04dac92ebc/src/utils/data_utils.py#L32) file;
-- additionally you may define new variables in the [data_utils.py](https://github.com/DCalhas/eeg_to_fmri/blob/0c634384faa79c7f7289aa7ec1af9b04dac92ebc/src/utils/data_utils.py) file, corresponding to **n_individuals_train_NEW** and **n_individuals_test_NEW**, which refer to the number of individuals used for the training and testing set, respectively;
-- define **dataset_NEW** variable in the [fmri_utils.py](https://github.com/DCalhas/eeg_to_fmri/blob/0c634384faa79c7f7289aa7ec1af9b04dac92ebc/src/utils/eeg_utils.py#L47) and [eeg_utils.py](https://github.com/DCalhas/eeg_to_fmri/blob/0c634384faa79c7f7289aa7ec1af9b04dac92ebc/src/utils/fmri_utils.py#L43) files. At this point you might be thinking: "Why is this guy defining the same variable in two different places?", well he ain't too smart tbh and he lazy af;
-- define the frequency, **fs_NEW**, at which the EEG recording was sampled, this can be done in the [eeg_utils.py](https://github.com/DCalhas/eeg_to_fmri/blob/0c634384faa79c7f7289aa7ec1af9b04dac92ebc/src/utils/eeg_utils.py#L38) file;
-- define the Time Response, **TR_NEW**, at which each fMRI volume was sampled, this can be done in the [fmri_utils.py](https://github.com/DCalhas/eeg_to_fmri/blob/0c634384faa79c7f7289aa7ec1af9b04dac92ebc/src/utils/fmri_utils.py#L27);
-- additionally, you might want to define the list of channels (if your EEG electrode setup follows the [10-20 system](https://en.wikipedia.org/wiki/10%E2%80%9320_system_(EEG))), to retrieve more advanced analysis, such as EEG electrode relevance. This should be done in the beginning of the [eeg_utils.py](https://github.com/DCalhas/eeg_to_fmri/blob/0c634384faa79c7f7289aa7ec1af9b04dac92ebc/src/utils/eeg_utils.py) file;
-- last, but no least, comes the time to implement the two functions that read the EEG and fMRI recordings, corresponding to **get_eeg_instance_NEW**, at [eeg_utils.py](https://github.com/DCalhas/eeg_to_fmri/blob/0c634384faa79c7f7289aa7ec1af9b04dac92ebc/src/utils/eeg_utils.py#L171), and **get_indviduals_path_NEW**, at [fmri_utils.py](https://github.com/DCalhas/eeg_to_fmri/blob/0c634384faa79c7f7289aa7ec1af9b04dac92ebc/src/utils/fmri_utils.py#L299);
-
-In addition to reading the rest of this section, which helps you setting up your data, you also have available two blog posts:
-
-- [EEG recording to fMRI volume](https://dcalhas.github.io/eeg_to_fmri/blog/EEG_fMRI.html): goes over an example on how to operate with a simultaneous EEG and fMRI dataset and creates a model that synthesizes fMRI from EEG;
-- [Classification on EEG only datasets](https://dcalhas.github.io/eeg_to_fmri/blog/Sinusoid_separation.html): this one picks up on the previous blog post and uses the pretrained model (that synthesizes fMRI from EEG), and shows you how to create an fMRI view of an EEG instance and classify it.
+- define the number of individuals, **n_individuals_NEW**, that your dataset contains, this can be done in the data_utils.py file;
+- additionally you may define new variables in the data_utils.py file, corresponding to **n_individuals_train_NEW** and **n_individuals_test_NEW**, which refer to the number of individuals used for the training and testing set, respectively;
+- define **dataset_NEW** variable in the fmri_utils.py and eeg_utils.py files. At this point you might be thinking: "Why is this guy defining the same variable in two different places?", well he ain't too smart tbh and he lazy af;
+- define the frequency, **fs_NEW**, at which the EEG recording was sampled, this can be done in the eeg_utils.py file;
+- define the Time Response, **TR_NEW**, at which each fMRI volume was sampled, this can be done in the fmri_utils.py;
+- additionally, you might want to define the list of channels (if your EEG electrode setup follows the [10-20 system](https://en.wikipedia.org/wiki/10%E2%80%9320_system_(EEG))), to retrieve more advanced analysis, such as EEG electrode relevance. This should be done in the beginning of the eeg_utils.py file;
+- last, but no least, comes the time to implement the two functions that read the EEG and fMRI recordings, corresponding to **get_eeg_instance_NEW**, at eeg_utils.py, and **get_indviduals_path_NEW**, at fmri_utils.py;
 
 ### Dataset structure
 
@@ -58,7 +50,7 @@ NEW
 Ideally you want this function to return an [mne.io.Raw](https://mne.tools/stable/generated/mne.io.Raw.html) object, that contains the EEG data. In this "tutorial" only this is the only supported option, however do it as you like most.
 
 The inputs of this function are:
-- *individual* - int, the individual one wants to retrieve. This function is being executed inside a for loop, ```for individual in range(getattr(data_utils, "n_individuals_"+dataset)```, that goes through the range of individuals, **n_individuals_NEW**, you set in the [data_utils.py](https://github.com/DCalhas/eeg_to_fmri/blob/0c634384faa79c7f7289aa7ec1af9b04dac92ebc/src/utils/data_utils.py#L32) file;
+- *individual* - int, the individual one wants to retrieve. This function is being executed inside a for loop, ```for individual in range(getattr(data_utils, "n_individuals_"+dataset)```, that goes through the range of individuals, **n_individuals_NEW**, you set in the data_utils.py file;
 - *path_eeg* - str, the path where your dataset is located, e.g. ```path_eeg=os.environ['EEG_FMRI_DATASETS']+dataset_NEW+"/EEG/"```, this may be an optional argument set as ```path_eeg=os.environ['EEG_FMRI_DATASETS']+dataset_NEW+"/EEG/"```;
 - *task* - str, can be set to None if it does not apply to your dataset;
 
@@ -117,7 +109,7 @@ Next step is to implement the function that retrieves the fMRI recordings of all
 
 The inputs of this function are:
 - *path_fmri* - str, absolute path that specifies the location of your dataset, e.g. ```path_fmri=os.environ['EEG_FMRI_DATASETS']+dataset_NEW+"/BOLD/```, this may be an optional argument set as ```path_fmri=os.environ['EEG_FMRI_DATASETS']+dataset_NEW+"/BOLD/"```
-- *resolution_factor* - float, this is an optional argument that might not be used, please refer to the [functions](https://github.com/DCalhas/eeg_to_fmri/blob/1df6f6e353952ca6b9643938e1558ecf0697d435/src/utils/fmri_utils.py#L110) where this argument is used to grasp its function. WARNING: this variable is deprecated;
+- *resolution_factor* - float, this is an optional argument that might not be used, please refer to the functions where this argument is used to grasp its function. WARNING: this variable is deprecated;
 - *number_individuals* - int, this variables specifies the number of individuals in this dataset, it is specified in the function call as ```number_individuals=getattr(data_utils, "number_individuals_"+dataset)```;
 
 Given the absolute path of the data and the number of individuals one wants to retrieve, we can now start implementing the code. Let's start by listing the individuals and saving it in a list:
